@@ -25,7 +25,7 @@ extra-source-files: CHANGELOG.md
 
 executable lua-minifier
     main-is:          Main.hs
-    other-modules:    Symbols
+    other-modules:    Symbols, Maps
     build-depends:
         base ^>=4.16.4.0,
         bimap ^>=0.5.0
