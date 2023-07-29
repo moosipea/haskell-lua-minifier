@@ -1,10 +1,11 @@
 module Maps where
 
 import Data.Bimap (Bimap)
+import Symbols (Keyword, Operator, Meta)
 import qualified Data.Bimap as M
 import qualified Symbols as S
 
-keywordBimap :: Bimap String S.Keyword
+keywordBimap :: Bimap String Keyword
 keywordBimap
   = M.insert "and" S.And
   . M.insert "break" S.Break
@@ -30,7 +31,7 @@ keywordBimap
   . M.insert "while" S.While
   $ M.empty 
 
-operatorBimap :: Bimap String S.Operator
+operatorBimap :: Bimap String Operator
 operatorBimap 
   = M.insert "+" S.Add
   . M.insert "-" S.SubtractOrMinus
@@ -56,3 +57,18 @@ operatorBimap
   . M.insert ".." S.Concatinate
   . M.insert ":" S.Colon
   $ M.empty
+
+metaBimap :: Bimap String Meta
+metaBimap
+  = M.insert "(" S.OpenParentheses
+  . M.insert ")" S.CloseParentheses
+  . M.insert "{" S.OpenCurly
+  . M.insert "}" S.CloseCurly
+  . M.insert "[" S.OpenSquare
+  . M.insert "]" S.CloseSquare
+  . M.insert "::" S.Label
+  . M.insert ";" S.Semicolon
+  . M.insert "," S.Comma
+  . M.insert "..." S.VarArg
+  $ M.empty
+
