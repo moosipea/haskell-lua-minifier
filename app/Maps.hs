@@ -1,7 +1,7 @@
 module Maps where
 
-import Data.Bimap (Bimap)
 import Symbols (Keyword, Operator, Meta)
+import Data.Bimap (Bimap)
 import qualified Data.Bimap as M
 import qualified Symbols as S
 

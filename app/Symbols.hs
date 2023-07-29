@@ -63,3 +63,7 @@ data Meta
   | Comma
   | VarArg
   deriving (Eq, Ord)
+
+data Literal
+  = NumberLiteral Float
+  | StringLiteral String
