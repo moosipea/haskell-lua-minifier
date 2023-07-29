@@ -1,4 +1,4 @@
-module Keywords where
+module Symbols where
 
 data Keyword 
   = And
@@ -23,6 +23,7 @@ data Keyword
   | True
   | Until
   | While
+  deriving (Eq, Ord, Show)
 
 data Operator
   = Add
@@ -48,6 +49,7 @@ data Operator
   | Dot
   | Concatinate
   | Colon
+  deriving (Eq, Ord)
 
 data Meta
   = OpenParentheses
@@ -60,3 +62,4 @@ data Meta
   | Semicolon
   | Comma
   | VarArg
+  deriving (Eq, Ord)
