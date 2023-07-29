@@ -24,30 +24,30 @@ data Keyword
   | Until
   | While
 
-  data Operator
-    = Add
-	| SubtractOrMinus -- Doesn't matter
-	| Multiply
-	| Divide 
-	| Modulo
-	| Power
-	| Length
-	| BitwiseAnd
-	| BitwiseXor
-	| BitwiseOr
-	| LeftShift
-	| RightShift
-	| FloorDivide
-	| Equals
-	| XorAssign
-	| LessThanEqual
-	| GreaterThanEqual
-	| LessThan
-	| GreaterThan
-	| Assign
-	| Dot
-	| Concatinate
-	| Colon
+data Operator
+  = Add
+  | SubtractOrMinus -- Doesn't matter
+  | Multiply
+  | Divide 
+  | Modulo
+  | Power
+  | Length
+  | BitwiseAnd
+  | BitwiseXor
+  | BitwiseOr
+  | LeftShift
+  | RightShift
+  | FloorDivide
+  | Equals
+  | XorAssign
+  | LessThanEqual
+  | GreaterThanEqual
+  | LessThan
+  | GreaterThan
+  | Assign
+  | Dot
+  | Concatinate
+  | Colon
 
 data Meta
   = OpenParentheses
