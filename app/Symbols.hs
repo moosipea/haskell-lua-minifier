@@ -49,7 +49,7 @@ data Operator
   | Dot
   | Concatinate
   | Colon
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 data Meta
   = OpenParentheses
@@ -62,8 +62,9 @@ data Meta
   | Semicolon
   | Comma
   | VarArg
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 data Literal
   = NumberLiteral Float
   | StringLiteral String
+  deriving (Eq, Ord, Show)

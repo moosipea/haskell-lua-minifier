@@ -1,4 +1,10 @@
 module Main where
 
+import Tokeniser
+
 main :: IO ()
-main = putStrLn "Hello, world!"
+main
+  = putStrLn
+  . show
+  . tokenise
+  $ initTokeniser "local burger = 42"
