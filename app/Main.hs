@@ -7,4 +7,4 @@ main
   = putStrLn
   . show
   . tokenise
-  $ initTokeniser "local burger = 42"
+  $ "local burger = 42"
