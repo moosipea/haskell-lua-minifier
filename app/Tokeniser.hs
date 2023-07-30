@@ -1,15 +1,18 @@
 module Tokeniser where
 
-import Symbols
+import qualified Symbols as S
 import Maps
 import Data.Char (isSpace)
+import Data.Maybe (isJust, fromJust)
 import qualified Data.Bimap as M
 
+import Debug.Trace
+
 data Token
-  = KeywordToken Keyword 
-  | OperatorToken Operator
-  | MetaToken Meta
-  | LiteralToken Literal
+  = KeywordToken S.Keyword 
+  | OperatorToken S.Operator
+  | MetaToken S.Meta
+  | LiteralToken S.Literal
   | Identifier String
   deriving (Show)
 
@@ -18,7 +21,8 @@ data TokeniserState = TokeniserState {
   _length :: Int,
   _pos :: Int,
   _accum :: String,
-  _tokens :: [Token]
+  _tokens :: [Token],
+  _return :: Bool
 }
 
 initTokeniser :: String -> TokeniserState
@@ -27,26 +31,32 @@ initTokeniser source = TokeniserState {
   _length = length source,
   _pos = 0,
   _accum = "",
-  _tokens = []
+  _tokens = [],
+  _return = False
 }
 
 matchUserToken :: String -> Token
 matchUserToken str = Identifier str
 
+matchToken :: String -> Maybe Token
+matchToken str
+  | M.member str keywordBimap = Just $ KeywordToken $ keywordBimap M.! str
+  | M.member str operatorBimap = Just $ OperatorToken $ operatorBimap M.! str
+  | M.member str metaBimap = Just $ MetaToken $ metaBimap M.! str
+  | otherwise = Nothing
+
 tokenise :: TokeniserState -> [Token]
 tokenise state
-  | isEOF && isAccumEmpty = tokens -- return
-  | isEOF = tokenise state { _accum = "" }
-  | M.member accum keywordBimap = tokenise state { _pos = nextPos, _accum = "", _tokens = tokens ++ [KeywordToken $ keywordBimap M.! accum] }
-  | M.member accum operatorBimap = tokenise state { _pos = nextPos, _accum = "", _tokens = tokens ++ [OperatorToken $ operatorBimap M.! accum] }
-  | M.member accum metaBimap = tokenise state { _pos = nextPos, _accum = "", _tokens = tokens ++ [MetaToken $ metaBimap M.! accum] }
-  | isSpace ch && not isAccumEmpty = tokenise state { _pos = nextPos, _accum = "", _tokens = tokens ++ [matchUserToken accum]} 
+  | isEOF && not (null accum) = tokens ++ [matchUserToken accum]
+  | isEOF = tokens
+  | isJust langToken = tokenise state { _pos = nextPos, _accum = "", _tokens = tokens ++ [fromJust langToken]}
+  | isSpace ch && not (null accum) = tokenise state { _pos = nextPos, _accum = "", _tokens = tokens ++ [matchUserToken accum]} 
   | isSpace ch = tokenise state { _pos = nextPos }
   | otherwise = tokenise state { _pos = nextPos, _accum = nextAccum}
   where isEOF = nextPos >= _length state
-        isAccumEmpty = null accum
         accum = _accum state
         tokens = _tokens state
         ch = _source state !! _pos state
         nextPos = _pos state + 1
         nextAccum = accum ++ [ch]
+        langToken = matchToken accum
