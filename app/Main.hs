@@ -3,8 +3,4 @@ module Main where
 import Tokeniser
 
 main :: IO ()
-main
-  = putStrLn
-  . show
-  . tokenise
-  $ "local burger = 42"
+main = print . tok $ "local burger = 42"

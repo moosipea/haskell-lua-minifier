@@ -25,7 +25,7 @@ extra-source-files: CHANGELOG.md
 
 executable lua-minifier
     main-is:          Main.hs
-    -- other-modules:    Tokeniser, Symbols, Maps
+    other-modules:    Tokeniser, Symbols
     build-depends:
         base >=4.7.0.0,
         bimap ^>=0.5.0
