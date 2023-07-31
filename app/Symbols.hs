@@ -56,4 +56,4 @@ data Symbol
   | Dot
   | Concat
   | VarArgs
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
