@@ -1,12 +1,13 @@
 module Tokeniser where
 
 import qualified Data.Bimap as B (lookup, member)
-import Data.Char (isDigit, isSpace)
+import Data.Char (isDigit, isHexDigit, isSpace)
 import Data.List (groupBy)
 import Data.Maybe (fromJust, isJust)
 import Debug.Trace
 import qualified Maps
 import qualified Symbols as S
+import Text.Read (readMaybe)
 
 data RawToken
   = Single S.Symbol
@@ -17,10 +18,14 @@ data RawToken
 
 type PToken = (Int, RawToken)
 
+allowedInLiteralNumber :: [Char]
+allowedInLiteralNumber = ['x', '.', 'e', 'E', 'p', 'P', '-']
+
 tokeniseNumber :: String -> Int -> PToken
 tokeniseNumber input pos = (length content, LiteralNumber content)
   where
-    content = takeWhile isDigit $ drop pos input
+    content = takeWhile pred $ drop pos input
+    pred ch = isHexDigit ch || elem ch allowedInLiteralNumber
 
 nonEscapedQuote :: (Char, Char) -> Bool
 nonEscapedQuote (c0, c1) = not $ c0 /= '\\' && c1 == '\"'
@@ -37,7 +42,12 @@ shouldEndMulti ch = not (isSpace ch) && not (B.member ch Maps.singleBimap)
 
 tokeniseMulti :: String -> Int -> PToken
 tokeniseMulti input pos = (length content, Multi content)
-  where content = takeWhile shouldEndMulti $ drop pos input
+  where
+    content = takeWhile shouldEndMulti $ drop pos input
+
+commentSkipCount :: String -> Int -> Int
+commentSkipCount = undefined
+
 
 next :: String -> Int -> [PToken] -> [PToken]
 next input pos tokens
@@ -54,6 +64,13 @@ next input pos tokens
     singleToken = B.lookup ch Maps.singleBimap :: Maybe S.Symbol
     multiToken = tokeniseMulti input pos
 
+parseNumber :: String -> Float
+parseNumber str = case readMaybe str of
+  Just x -> x
+  Nothing -> fromIntegral $ case readMaybe str of
+    Just n -> n
+    Nothing -> error $ "Read error on: " ++ str
+
 assignSymbol :: RawToken -> S.Symbol
 assignSymbol token = case token of
   Single sym -> sym
@@ -61,7 +78,7 @@ assignSymbol token = case token of
     Just sym -> sym
     Nothing -> S.Identifier raw
   LiteralString str -> S.LiteralString str
-  LiteralNumber str -> S.LiteralNumber $ read str
+  LiteralNumber str -> S.LiteralNumber $ parseNumber str
 
 tok :: String -> [S.Symbol]
 tok input = map (assignSymbol . snd) $ next input 0 []

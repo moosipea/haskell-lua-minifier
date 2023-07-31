@@ -1,7 +1,2 @@
-local foo = "hello, world!"
-
-function bar(baz)
-	print(baz)
-end
-
-bar(foo)
+-- short comment
+local foo = 4*bar
