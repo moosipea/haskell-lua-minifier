@@ -8,16 +8,16 @@ import Debug.Trace
 import qualified Maps
 import qualified Symbols as S
 
-data TokenKind
+data RawToken
   = Single S.Symbol
   | Multi String
   | LiteralString String
   | LiteralNumber String
   deriving (Show)
 
-type Token = (Int, TokenKind)
+type PToken = (Int, RawToken)
 
-tokeniseNumber :: String -> Int -> Token
+tokeniseNumber :: String -> Int -> PToken
 tokeniseNumber input pos = (length content, LiteralNumber content)
   where
     content = takeWhile isDigit $ drop pos input
@@ -25,7 +25,7 @@ tokeniseNumber input pos = (length content, LiteralNumber content)
 nonEscapedQuote :: (Char, Char) -> Bool
 nonEscapedQuote (c0, c1) = not $ c0 /= '\\' && c1 == '\"'
 
-tokeniseString :: String -> Int -> Token
+tokeniseString :: String -> Int -> PToken
 tokeniseString input pos = (length content, LiteralString content)
   where
     fromPos = drop pos input
@@ -35,11 +35,11 @@ tokeniseString input pos = (length content, LiteralString content)
 shouldEndMulti :: Char -> Bool
 shouldEndMulti ch = not (isSpace ch) && not (B.member ch Maps.singleBimap)
 
-tokeniseMulti :: String -> Int -> Token
+tokeniseMulti :: String -> Int -> PToken
 tokeniseMulti input pos = (length content, Multi content)
   where content = takeWhile shouldEndMulti $ drop pos input
 
-next :: String -> Int -> [Token] -> [Token]
+next :: String -> Int -> [PToken] -> [PToken]
 next input pos tokens
   | pos >= length input = tokens
   | isSpace ch = next input (pos + 1) tokens
@@ -54,5 +54,14 @@ next input pos tokens
     singleToken = B.lookup ch Maps.singleBimap :: Maybe S.Symbol
     multiToken = tokeniseMulti input pos
 
-tok :: String -> [Token]
-tok input = next input 0 []
+assignSymbol :: RawToken -> S.Symbol
+assignSymbol token = case token of
+  Single sym -> sym
+  Multi raw -> case B.lookup raw Maps.multiBimap of
+    Just sym -> sym
+    Nothing -> S.Identifier raw
+  LiteralString str -> S.LiteralString str
+  LiteralNumber str -> S.LiteralNumber $ read str
+
+tok :: String -> [S.Symbol]
+tok input = map (assignSymbol . snd) $ next input 0 []

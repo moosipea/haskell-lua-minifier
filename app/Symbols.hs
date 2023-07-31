@@ -57,4 +57,6 @@ data Symbol
   | Concat
   | VarArgs
   | Identifier String
+  | LiteralString String
+  | LiteralNumber Int -- TODO: use Float here
   deriving (Eq, Ord, Show)
