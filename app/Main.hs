@@ -3,4 +3,5 @@ module Main where
 import Tokeniser
 
 main :: IO ()
-main = print . tok $ "local burger = 42"
+--main = print $ tokeniseNumber "123aad" 0
+main = print $ tokeniseString "hello, world!\"" 0
