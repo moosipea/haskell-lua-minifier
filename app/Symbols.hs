@@ -56,4 +56,5 @@ data Symbol
   | Dot
   | Concat
   | VarArgs
+  | Identifier String
   deriving (Eq, Ord, Show)

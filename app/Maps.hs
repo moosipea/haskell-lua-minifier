@@ -30,3 +30,39 @@ singleBimap
   . B.insert ',' S.Comma
   . B.insert '.' S.Dot
   $ B.empty 
+
+multiBimap :: Bimap String S.Symbol
+multiBimap 
+  = B.insert "and" S.And
+  . B.insert "break" S.Break
+  . B.insert "do" S.Do
+  . B.insert "else" S.Else
+  . B.insert "elseif" S.Elseif
+  . B.insert "end" S.End
+  . B.insert "false" S.False
+  . B.insert "for" S.For
+  . B.insert "function" S.Function
+  . B.insert "goto" S.Goto
+  . B.insert "if" S.If
+  . B.insert "in" S.In
+  . B.insert "local" S.Local
+  . B.insert "nil" S.Nil
+  . B.insert "not" S.Not
+  . B.insert "or" S.Or
+  . B.insert "repeat" S.Repeat
+  . B.insert "return" S.Return
+  . B.insert "then" S.Then
+  . B.insert "true" S.True
+  . B.insert "until" S.Until
+  . B.insert "while" S.While
+  . B.insert "<<" S.ShiftLeft
+  . B.insert ">>" S.ShiftRight
+  . B.insert "//" S.FloorDivide
+  . B.insert "==" S.Equals
+  . B.insert "~=" S.XorAssign
+  . B.insert "<=" S.LessThanEqual
+  . B.insert ">=" S.GreaterThanEqual
+  . B.insert "::" S.Label
+  . B.insert ".." S.Concat
+  . B.insert "..." S.VarArgs
+  $ B.empty
