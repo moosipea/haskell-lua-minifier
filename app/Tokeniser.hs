@@ -7,6 +7,7 @@ import Data.Maybe (fromJust, isJust)
 import Debug.Trace
 import qualified Maps
 import qualified Symbols as S
+import Number
 import Text.Read (readMaybe)
 
 data RawToken
@@ -65,13 +66,6 @@ next input pos tokens
     singleToken = B.lookup ch Maps.singleBimap :: Maybe S.Symbol
     multiToken = tokeniseMulti input pos
 
-parseNumber :: String -> Float
-parseNumber str = case readMaybe str of
-  Just x -> x
-  Nothing -> fromIntegral $ case readMaybe str of
-    Just n -> n
-    Nothing -> error $ "Read error on: " ++ str
-
 assignSymbol :: RawToken -> S.Symbol
 assignSymbol token = case token of
   Single sym -> sym
@@ -79,7 +73,7 @@ assignSymbol token = case token of
     Just sym -> sym
     Nothing -> S.Identifier raw
   LiteralString str -> S.LiteralString str
-  LiteralNumber str -> S.LiteralNumber $ parseNumber str
+  LiteralNumber str -> S.LiteralNumber . fromJust $ parseLuaNumber str
 
 tok :: String -> [S.Symbol]
 tok input = map (assignSymbol . snd) $ next input 0 []
