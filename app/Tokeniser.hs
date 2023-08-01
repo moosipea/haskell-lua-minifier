@@ -46,15 +46,16 @@ tokeniseMulti input pos = (length content, Multi content)
     content = takeWhile shouldEndMulti $ drop pos input
 
 commentSkipCount :: String -> Int -> Int
-commentSkipCount = undefined
+commentSkipCount input pos = length $ takeWhile (/='\n') $ drop pos input
 
-
+-- Main parser function
 next :: String -> Int -> [PToken] -> [PToken]
 next input pos tokens
   | pos >= length input = tokens
   | isSpace ch = next input (pos + 1) tokens
   | isDigit ch = next input (pos + fst numberToken) (tokens ++ [numberToken])
   | ch == '\"' = next input (pos + 2 + fst stringToken) (tokens ++ [stringToken])
+  | "--" == take 2 (drop pos input) = next input (pos + commentSkipCount input pos) tokens
   | isJust singleToken = next input (pos + 1) (tokens ++ [(1, Single $ fromJust singleToken)])
   | otherwise = next input (pos + fst multiToken) (tokens ++ [multiToken])
   where

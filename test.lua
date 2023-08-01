@@ -1,2 +1,7 @@
 -- short comment
-local foo = 4*bar
+local foo = 4*3
+
+-- Prints the provided argument
+function bar(baz)
+	print(baz)
+end
